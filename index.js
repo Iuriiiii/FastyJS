@@ -69,27 +69,25 @@ Array.prototype.order = function(needle)
         return this.order(this.indexes(needle));
 };
 
-Array.prototype.eachTime = function(param1, param2, param3)
+Array.prototype.eachTime2 = function(cb, interval = 20, run)
 {
-    let interval = 0, idx = 0, cb = param2;
+    if(typeof cb === 'number' && typeof interval === 'function')
+        [cb, interval] = [interval, cb];
 
-    if(typeof param1 === 'number')
-        interval = param1;
-    else
-        cb = param1;
+    let idx = 0;
 
-    if(param3)
+    if(run)
         cb(this[0], 0, this, interval), idx++;
 
-    let intervalHandle = setInterval((element, index, array) =>
+    let handle = setInterval((element, index, array) =>
     {
-        if(idx <= this.length)
-        {
-            clearInterval(intervalHandle);
-            return;
-        }
+        if(idx >= this.length)
+            return clearInterval(handle);
 
-        cb(this[idx], idx, array, interval); idx++;
+        if(cb(this[idx], idx, array, interval) === false)
+            return clearInterval(handle);
+            
+        idx++;
     }, interval, this[idx], idx, this, interval);
 };
 
