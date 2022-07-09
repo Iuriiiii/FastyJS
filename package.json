@@ -1,6 +1,6 @@
 {
   "name": "fastyjs",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "Usefull js utilities",
   "main": "index.js",
   "scripts": {

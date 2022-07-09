@@ -69,26 +69,34 @@ Array.prototype.order = function(needle)
         return this.order(this.indexes(needle));
 };
 
-Array.prototype.eachTime2 = function(cb, interval = 20, run)
+Array.prototype.eachTime = function(cb, interval = 20, run)
 {
-    if(typeof cb === 'number' && typeof interval === 'function')
-        [cb, interval] = [interval, cb];
+    return new Promise((resolve) => {
+        if(typeof cb === 'number' && typeof interval === 'function')
+            [cb, interval] = [interval, cb];
 
-    let idx = 0;
+        let idx = 0;
 
-    if(run)
-        cb(this[0], 0, this, interval), idx++;
+        if(run)
+            cb(this[0], 0, this, interval), idx++;
 
-    let handle = setInterval((element, index, array) =>
-    {
-        if(idx >= this.length)
-            return clearInterval(handle);
+        function end(handle)
+        {
+            clearInterval(handle);
+            resolve(this, this[idx], idx, interval);
+        }
 
-        if(cb(this[idx], idx, array, interval) === false)
-            return clearInterval(handle);
-            
-        idx++;
-    }, interval, this[idx], idx, this, interval);
+        let handle = setInterval((element, index, array) =>
+        {
+            if(idx >= this.length)
+                return end(handle);
+
+            if(cb(this[idx], idx, array, interval) === false)
+                return end(handle);
+                
+            idx++;
+        }, interval, this[idx], idx, this, interval);
+    });
 };
 
 /**
@@ -115,4 +123,9 @@ Number.prototype.close = function(min, max)
 Number.prototype.hasDecimals = function()
 {
     return this % 1 > 0;
+};
+
+String.prototype.readAsTextFile = async function()
+{
+    return await fetch(this.toString()).then(r => r.text()).then(r => r).catch(r => '');
 };
