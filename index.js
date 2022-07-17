@@ -130,6 +130,16 @@ String.prototype.readAsTextFile = async function()
     return await fetch(this.toString()).then(r => r.text()).then(r => r).catch(r => '');
 };
 
+Object.prototype.isEmpty = function()
+{
+    return this.values().length === 0;
+}
+
+Object.prototype.isNotEmpty = function()
+{
+    return !this.isEmpty();
+}
+
 Object.prototype.extract = function(expr, del = '>')
 {
     if(typeof expr !== 'string' || typeof del !== 'string')
