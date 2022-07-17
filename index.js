@@ -129,3 +129,18 @@ String.prototype.readAsTextFile = async function()
 {
     return await fetch(this.toString()).then(r => r.text()).then(r => r).catch(r => '');
 };
+
+Object.prototype.extract = function(expr, del = '>')
+{
+    if(typeof expr !== 'string' || typeof del !== 'string')
+        return undefined;
+
+    return expr.split(del).reduce((acc, item) =>
+    {
+        if(typeof acc[item] === 'function')
+            return acc[item]();
+        else
+            return acc[item];
+
+    }, this);
+};
